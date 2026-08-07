@@ -17,20 +17,18 @@ const easeOut = (t: number): number => 1 - Math.pow(1 - t, 3);
 
 /**
  * Animates a number from 0 to `end` using requestAnimationFrame.
- * Jumps straight to `end` when the user prefers reduced motion.
+ *
+ * Under reduced motion the final value is returned directly rather than being
+ * written to state from the effect — same result, no extra render pass.
  */
 export function useCountUp({ end, duration = 2000, start = true }: UseCountUpOptions): number {
   const [value, setValue] = useState(0);
   const frameRef = useRef<number>(0);
   const prefersReducedMotion = useReducedMotion();
+  const shouldAnimate = start && !prefersReducedMotion;
 
   useEffect(() => {
-    if (!start) return;
-
-    if (prefersReducedMotion) {
-      setValue(end);
-      return;
-    }
+    if (!shouldAnimate) return;
 
     const startTime = performance.now();
 
@@ -46,7 +44,8 @@ export function useCountUp({ end, duration = 2000, start = true }: UseCountUpOpt
 
     frameRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameRef.current);
-  }, [end, duration, start, prefersReducedMotion]);
+  }, [end, duration, shouldAnimate]);
 
+  if (prefersReducedMotion) return start ? end : 0;
   return value;
 }

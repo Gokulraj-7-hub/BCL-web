@@ -1,24 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 /**
  * Subscribe to a CSS media query.
+ *
+ * Built on `useSyncExternalStore` rather than `useState` + `useEffect`: a
+ * media query list *is* an external store, and this avoids the cascading
+ * render that setting state from an effect body causes on mount.
  *
  * @param query A media query string, e.g. `(min-width: 768px)`.
  * @returns Whether the query currently matches (always `false` on the server).
  */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      const mediaQuery = window.matchMedia(query);
+      mediaQuery.addEventListener('change', onStoreChange);
+      return () => mediaQuery.removeEventListener('change', onStoreChange);
+    },
+    [query],
+  );
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(query);
-    setMatches(mediaQuery.matches);
+  const getSnapshot = useCallback(() => window.matchMedia(query).matches, [query]);
 
-    const onChange = (event: MediaQueryListEvent) => setMatches(event.matches);
-    mediaQuery.addEventListener('change', onChange);
-    return () => mediaQuery.removeEventListener('change', onChange);
-  }, [query]);
+  // The server has no viewport, so render the non-matching branch and let the
+  // client correct it on hydration.
+  const getServerSnapshot = useCallback(() => false, []);
 
-  return matches;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

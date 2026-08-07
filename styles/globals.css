@@ -329,11 +329,7 @@
 
   /* Frosted surface used by cards, the navbar and modals. */
   .glass {
-    background: linear-gradient(
-      135deg,
-      rgb(255 255 255 / 0.07) 0%,
-      rgb(255 255 255 / 0.03) 100%
-    );
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.07) 0%, rgb(255 255 255 / 0.03) 100%);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border: 1px solid rgb(255 255 255 / 0.1);
@@ -419,13 +415,7 @@
 
   /* Edge fade for horizontally scrolling marquees. */
   .mask-fade-x {
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 8%,
-      #000 92%,
-      transparent
-    );
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   }
 

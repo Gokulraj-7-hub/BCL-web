@@ -27,18 +27,18 @@ Tamil Nadu.
 
 ## Tech Stack
 
-| Layer | Technology |
-| --- | --- |
-| Framework | Next.js 15 (App Router, React Server Components) |
-| UI | React 19, TypeScript 5 (strict) |
-| Styling | Tailwind CSS 4 (CSS-first `@theme` configuration) |
-| Animation | Framer Motion 11, GSAP 3 + ScrollTrigger |
-| Forms | React Hook Form 7 + Zod 3 (shared client/server schema) |
-| Email | Nodemailer (SMTP, server-side only) |
-| Icons | Lucide React |
-| Testing | Vitest 2, Testing Library, jsdom |
-| Tooling | ESLint 9 (flat config), Prettier 3 |
-| Hosting | Vercel (zero-config) |
+| Layer     | Technology                                              |
+| --------- | ------------------------------------------------------- |
+| Framework | Next.js 16 (App Router, React Server Components)        |
+| UI        | React 19, TypeScript 5 (strict)                         |
+| Styling   | Tailwind CSS 4 (CSS-first `@theme` configuration)       |
+| Animation | Framer Motion 11, GSAP 3 + ScrollTrigger                |
+| Forms     | React Hook Form 7 + Zod 3 (shared client/server schema) |
+| Email     | Nodemailer 9 (SMTP, server-side only)                   |
+| Icons     | Lucide React                                            |
+| Testing   | Vitest 2, Testing Library, jsdom                        |
+| Tooling   | ESLint 9 (flat config), Prettier 3                      |
+| Hosting   | Vercel (zero-config)                                    |
 
 ---
 
@@ -95,18 +95,18 @@ npm start
 
 Copy `.env.example` to `.env.local` and fill in the values. **Never commit `.env.local`.**
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Yes | Canonical site URL, no trailing slash. Drives SEO metadata, canonical tags, `sitemap.xml` and `robots.txt`. |
-| `SMTP_HOST` | For the form | SMTP server hostname (e.g. `smtp.gmail.com`). |
-| `SMTP_PORT` | For the form | `587` for STARTTLS, `465` for implicit TLS. |
-| `SMTP_SECURE` | For the form | `true` only when using port 465. |
-| `SMTP_USER` | For the form | SMTP username. |
-| `SMTP_PASSWORD` | For the form | SMTP password or app password. **Server-side only.** |
-| `CONTACT_TO_EMAIL` | For the form | Mailbox that receives enquiries. |
-| `CONTACT_FROM_EMAIL` | For the form | `From` address on outgoing mail. |
-| `NEXT_PUBLIC_GA_ID` | No | Google Analytics measurement ID. Leave empty to disable analytics entirely. |
-| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | No | Google Search Console verification token. |
+| Variable                               | Required     | Purpose                                                                                                     |
+| -------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`                 | Yes          | Canonical site URL, no trailing slash. Drives SEO metadata, canonical tags, `sitemap.xml` and `robots.txt`. |
+| `SMTP_HOST`                            | For the form | SMTP server hostname (e.g. `smtp.gmail.com`).                                                               |
+| `SMTP_PORT`                            | For the form | `587` for STARTTLS, `465` for implicit TLS.                                                                 |
+| `SMTP_SECURE`                          | For the form | `true` only when using port 465.                                                                            |
+| `SMTP_USER`                            | For the form | SMTP username.                                                                                              |
+| `SMTP_PASSWORD`                        | For the form | SMTP password or app password. **Server-side only.**                                                        |
+| `CONTACT_TO_EMAIL`                     | For the form | Mailbox that receives enquiries.                                                                            |
+| `CONTACT_FROM_EMAIL`                   | For the form | `From` address on outgoing mail.                                                                            |
+| `NEXT_PUBLIC_GA_ID`                    | No           | Google Analytics measurement ID. Leave empty to disable analytics entirely.                                 |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | No           | Google Search Console verification token.                                                                   |
 
 Only variables prefixed with `NEXT_PUBLIC_` reach the browser. SMTP credentials are read
 exclusively inside `lib/mailer.ts`, which imports `server-only` so an accidental client import
@@ -148,18 +148,18 @@ becomes a build error rather than a leak.
 
 ## Available Scripts
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the development server |
-| `npm run build` | Create a production build |
-| `npm start` | Serve the production build |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Run ESLint with autofix |
-| `npm run typecheck` | Type-check without emitting |
-| `npm run format` | Format all files with Prettier |
-| `npm run format:check` | Verify formatting |
-| `npm test` | Run the test suite once |
-| `npm run test:watch` | Run tests in watch mode |
+| Command                 | Description                      |
+| ----------------------- | -------------------------------- |
+| `npm run dev`           | Start the development server     |
+| `npm run build`         | Create a production build        |
+| `npm start`             | Serve the production build       |
+| `npm run lint`          | Run ESLint                       |
+| `npm run lint:fix`      | Run ESLint with autofix          |
+| `npm run typecheck`     | Type-check without emitting      |
+| `npm run format`        | Format all files with Prettier   |
+| `npm run format:check`  | Verify formatting                |
+| `npm test`              | Run the test suite once          |
+| `npm run test:watch`    | Run tests in watch mode          |
 | `npm run test:coverage` | Run tests with a coverage report |
 
 ---
@@ -169,16 +169,16 @@ becomes a build error rather than a leak.
 All copy lives in `constants/` as typed objects — you do not need to touch component code to
 update the site.
 
-| File | Contains |
-| --- | --- |
-| `constants/company.ts` | Company name, tagline, director, phone, email, address, business hours, social links, mission, vision, values, timeline, statistics |
-| `constants/services.ts` | Service catalogue, "Why Choose Us" features, development process steps |
-| `constants/training.ts` | Training tracks and course lists, internship programs |
-| `constants/technologies.ts` | Technology marquee entries |
-| `constants/testimonials.ts` | Testimonials |
-| `constants/faq.ts` | FAQ questions and answers |
-| `constants/gallery.ts` | Gallery images, alt text and categories |
-| `constants/navigation.ts` | Navbar and footer link lists |
+| File                        | Contains                                                                                                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `constants/company.ts`      | Company name, tagline, director, phone, email, address, business hours, social links, mission, vision, values, timeline, statistics |
+| `constants/services.ts`     | Service catalogue, "Why Choose Us" features, development process steps                                                              |
+| `constants/training.ts`     | Training tracks and course lists, internship programs                                                                               |
+| `constants/technologies.ts` | Technology marquee entries                                                                                                          |
+| `constants/testimonials.ts` | Testimonials                                                                                                                        |
+| `constants/faq.ts`          | FAQ questions and answers                                                                                                           |
+| `constants/gallery.ts`      | Gallery images, alt text and categories                                                                                             |
+| `constants/navigation.ts`   | Navbar and footer link lists                                                                                                        |
 
 **Adding a service:** append an entry to `SERVICES` in `constants/services.ts`. Import an icon
 from `lucide-react` and pick a Tailwind gradient for `accent`. The card, the Schema.org offer
@@ -283,13 +283,13 @@ if you go that route.
 
 ## Documentation
 
-| Document | Contents |
-| --- | --- |
-| [`docs/TESTING.md`](docs/TESTING.md) | Test strategy, automated suite, manual QA results, cross-browser and responsive testing |
-| [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md) | Bundle analysis, optimisation techniques, Lighthouse guidance |
-| [`docs/SEO-CHECKLIST.md`](docs/SEO-CHECKLIST.md) | Full SEO implementation checklist and post-launch tasks |
-| [`docs/ACCESSIBILITY.md`](docs/ACCESSIBILITY.md) | WCAG conformance notes and verification results |
-| [`docs/SECURITY.md`](docs/SECURITY.md) | Security headers, input handling, secrets management |
+| Document                                         | Contents                                                                                |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| [`docs/TESTING.md`](docs/TESTING.md)             | Test strategy, automated suite, manual QA results, cross-browser and responsive testing |
+| [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md)     | Bundle analysis, optimisation techniques, Lighthouse guidance                           |
+| [`docs/SEO-CHECKLIST.md`](docs/SEO-CHECKLIST.md) | Full SEO implementation checklist and post-launch tasks                                 |
+| [`docs/ACCESSIBILITY.md`](docs/ACCESSIBILITY.md) | WCAG conformance notes and verification results                                         |
+| [`docs/SECURITY.md`](docs/SECURITY.md)           | Security headers, input handling, secrets management                                    |
 
 ---
 

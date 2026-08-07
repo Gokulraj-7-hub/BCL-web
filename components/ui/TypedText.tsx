@@ -38,28 +38,31 @@ export function TypedText({
 
     const current = phrases[phraseIndex % phrases.length] ?? '';
 
-    // Finished typing: hold, then start deleting.
+    // Every state transition happens inside a timer callback rather than in the
+    // effect body, so no render cascades synchronously off this effect.
+    let delay: number;
+    let advance: () => void;
+
     if (!isDeleting && displayed === current) {
-      const timer = window.setTimeout(() => setIsDeleting(true), pauseDuration);
-      return () => window.clearTimeout(timer);
-    }
-
-    // Finished deleting: advance to the next phrase.
-    if (isDeleting && displayed === '') {
-      setIsDeleting(false);
-      setPhraseIndex((index) => (index + 1) % phrases.length);
-      return undefined;
-    }
-
-    const timer = window.setTimeout(
-      () => {
+      // Finished typing: hold the complete phrase, then start deleting.
+      delay = pauseDuration;
+      advance = () => setIsDeleting(true);
+    } else if (isDeleting && displayed === '') {
+      // Finished deleting: move on to the next phrase.
+      delay = deletingSpeed;
+      advance = () => {
+        setIsDeleting(false);
+        setPhraseIndex((index) => (index + 1) % phrases.length);
+      };
+    } else {
+      delay = isDeleting ? deletingSpeed : typingSpeed;
+      advance = () =>
         setDisplayed((text) =>
           isDeleting ? current.slice(0, text.length - 1) : current.slice(0, text.length + 1),
         );
-      },
-      isDeleting ? deletingSpeed : typingSpeed,
-    );
+    }
 
+    const timer = window.setTimeout(advance, delay);
     return () => window.clearTimeout(timer);
   }, [
     displayed,

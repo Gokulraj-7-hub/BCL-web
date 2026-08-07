@@ -117,12 +117,7 @@ export interface Testimonial {
 /* -------------------------------------------------------------------------- */
 
 export type GalleryCategory =
-  | 'Training'
-  | 'Internships'
-  | 'Workshops'
-  | 'Hackathons'
-  | 'Office'
-  | 'Seminars';
+  'Training' | 'Internships' | 'Workshops' | 'Hackathons' | 'Office' | 'Seminars';
 
 export interface GalleryItem {
   id: string;
