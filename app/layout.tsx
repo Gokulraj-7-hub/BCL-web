@@ -7,24 +7,39 @@ import { homePageSchemas } from '@/lib/schema';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { FloatingActions } from '@/components/layout/FloatingActions';
-import { Preloader } from '@/components/layout/Preloader';
 import { CursorGlow } from '@/components/background/CursorGlow';
+import { RevealObserver } from '@/components/background/RevealObserver';
+import { CardPointerEffects } from '@/components/background/CardPointerEffects';
 
 /**
  * Fonts are self-hosted by `next/font`, which removes the render-blocking
  * request to Google Fonts and eliminates layout shift via `font-display: swap`
  * plus an automatic size-adjusted fallback.
  */
+/**
+ * Inter is a variable font, so it is a single ~48 kB file — the largest asset
+ * on the page. It is deliberately *not* preloaded: Lighthouse identified the
+ * hero `<h1>` (Poppins) as the Largest Contentful Paint element, and having
+ * Inter compete for the same early bandwidth pushed that paint later. Body
+ * text renders in the size-adjusted fallback for a moment instead, which is
+ * imperceptible and costs nothing in layout shift.
+ */
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  preload: true,
+  preload: false,
 });
 
+/**
+ * Poppins is not a variable font, so every weight is a separate file that gets
+ * preloaded. Only the three weights the headings actually use are requested —
+ * carrying 400 and 800 as well cost two extra render-blocking font fetches and
+ * measurably delayed Largest Contentful Paint.
+ */
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['500', '600', '700'],
   display: 'swap',
   variable: '--font-poppins',
   preload: true,
@@ -59,7 +74,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className="min-h-dvh antialiased">
-        <Preloader />
+        {/* Single delegated listeners for every scroll reveal and card
+            pointer effect on the page — see each component for why. */}
+        <RevealObserver />
+        <CardPointerEffects />
         <CursorGlow />
         <Navbar />
 

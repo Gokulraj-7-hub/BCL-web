@@ -38,12 +38,56 @@
   --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
   --animate-spin-slow: spin 18s linear infinite;
   --animate-spin-slower: spin 40s linear infinite;
+  /* Counter-rotation, so an element inside a spinning parent stays upright. */
+  --animate-spin-slower-reverse: spin 40s linear infinite reverse;
   --animate-marquee: marquee 40s linear infinite;
   --animate-marquee-reverse: marquee-reverse 40s linear infinite;
   --animate-shimmer: shimmer 2.5s linear infinite;
   --animate-scan: scan 4s ease-in-out infinite;
   --animate-blink: blink 1s step-end infinite;
   --animate-orbit: orbit 12s linear infinite;
+  /*
+    Above-the-fold entrance. Deliberately CSS rather than Framer Motion: a JS
+    variant that starts at `opacity: 0` keeps the hero invisible until React
+    hydrates, which on a throttled mobile CPU delayed Largest Contentful Paint
+    by several seconds. A CSS animation runs from first paint instead.
+  */
+  --animate-enter: enter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-enter-right: enter-right 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-grow-x: grow-x 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
 }
 
 @keyframes float {
@@ -227,6 +271,62 @@
    ========================================================================== */
 
 @layer components {
+  /*
+    Scroll reveal. Elements are visible by default and only hidden once
+    `RevealObserver` confirms they are off-screen, so content is never stuck
+    invisible for crawlers or if JavaScript fails to run.
+  */
+  .reveal {
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .reveal[data-reveal-state='hidden'] {
+    opacity: 0;
+  }
+  .reveal[data-reveal='up'][data-reveal-state='hidden'] {
+    transform: translateY(1.5rem);
+  }
+  .reveal[data-reveal='left'][data-reveal-state='hidden'] {
+    transform: translateX(-2rem);
+  }
+  .reveal[data-reveal='right'][data-reveal-state='hidden'] {
+    transform: translateX(2rem);
+  }
+  .reveal[data-reveal='scale'][data-reveal-state='hidden'] {
+    transform: scale(0.96);
+  }
+
+  .reveal[data-reveal-state='shown'] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Pointer tilt, driven by `CardPointerEffects` writing --tilt-x / --tilt-y. */
+  .glass-tilt {
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  }
+
+  /* Pointer spotlight, driven by --spot-x / --spot-y. */
+  .glass-spotlight {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(
+      320px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      rgb(43 140 238 / 0.16),
+      transparent 65%
+    );
+  }
+  .group:hover > .glass-spotlight {
+    opacity: 1;
+  }
+
   /* Frosted surface used by cards, the navbar and modals. */
   .glass {
     background: linear-gradient(

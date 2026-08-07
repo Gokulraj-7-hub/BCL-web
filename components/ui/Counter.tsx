@@ -27,11 +27,17 @@ export function Counter({ value, suffix = '', prefix = '', duration, className }
   const current = useCountUp({ end: value, duration, start: isInView });
 
   return (
-    <span
-      ref={ref}
-      className={cn('tabular-nums', className)}
-      aria-label={`${prefix}${formatCount(value)}${suffix}`}
-    >
+    <span ref={ref} className={cn('tabular-nums', className)}>
+      {/*
+        `aria-label` is prohibited on a plain span, so the final value is
+        exposed as visually hidden text instead. Screen readers announce the
+        result once rather than every intermediate frame.
+      */}
+      <span className="sr-only">
+        {prefix}
+        {formatCount(value)}
+        {suffix}
+      </span>
       <span aria-hidden="true">
         {prefix}
         {formatCount(current)}

@@ -1,20 +1,23 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { PROCESS_STEPS } from '@/constants/services';
-import { fadeInUp, staggerContainer } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 /**
  * Development-process timeline.
  *
- * GSAP drives the progress line: it is scrubbed against scroll position via
- * ScrollTrigger, which is smoother than re-rendering React on every frame.
- * The plugin is imported dynamically so it stays out of the initial bundle.
+ * GSAP ScrollTrigger scrubs the progress line against scroll position, which
+ * is far smoother than re-rendering React on every frame.
+ *
+ * Loading is gated twice over: the import only fires once the section nears
+ * the viewport, and only after the main thread goes idle. Importing it on
+ * mount pulled ~93 kB and a full ScrollTrigger layout pass into the page's
+ * busiest moment, which Lighthouse charged straight to Total Blocking Time.
  */
 export function Process() {
   const lineRef = useRef<HTMLSpanElement>(null);
@@ -29,12 +32,16 @@ export function Process() {
     if (!line || !container) return;
 
     let cleanup: (() => void) | undefined;
+    let cancelled = false;
 
-    void (async () => {
+    const loadScrollTrigger = async () => {
       const [{ gsap }, { ScrollTrigger }] = await Promise.all([
         import('gsap'),
         import('gsap/ScrollTrigger'),
       ]);
+
+      // The effect may have been torn down while the chunks were in flight.
+      if (cancelled) return;
 
       gsap.registerPlugin(ScrollTrigger);
 
@@ -57,9 +64,33 @@ export function Process() {
         animation.scrollTrigger?.kill();
         animation.kill();
       };
-    })();
+    };
 
-    return () => cleanup?.();
+    const scheduleLoad = () => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(() => void loadScrollTrigger(), { timeout: 1500 });
+      } else {
+        window.setTimeout(() => void loadScrollTrigger(), 400);
+      }
+    };
+
+    // Start fetching a screen ahead so the line is ready before it is seen.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer.disconnect();
+          scheduleLoad();
+        }
+      },
+      { rootMargin: '100% 0px' },
+    );
+    observer.observe(container);
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+      cleanup?.();
+    };
   }, [prefersReducedMotion]);
 
   return (
@@ -86,20 +117,14 @@ export function Process() {
             className="absolute top-0 left-6 h-full w-0.5 origin-top rounded-full bg-gradient-to-b from-brand-400 via-brand-500 to-brand-700 md:left-1/2 md:-translate-x-1/2"
           />
 
-          <motion.ol
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            className="relative flex flex-col gap-6"
-          >
+          <ol className="relative flex flex-col gap-6">
             {PROCESS_STEPS.map((step, index) => {
               const isLeft = index % 2 === 0;
 
               return (
-                <motion.li
+                <Reveal
+                  as="li"
                   key={step.step}
-                  variants={fadeInUp}
                   className={`relative pl-16 md:w-1/2 md:pl-0 ${
                     isLeft ? 'md:mr-auto md:pr-12 md:text-right' : 'md:ml-auto md:pl-12'
                   }`}
@@ -130,10 +155,10 @@ export function Process() {
                       {step.description}
                     </p>
                   </GlassCard>
-                </motion.li>
+                </Reveal>
               );
             })}
-          </motion.ol>
+          </ol>
         </div>
       </Container>
     </section>

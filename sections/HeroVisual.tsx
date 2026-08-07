@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Cloud, Code2, Cpu, Database, Lock, ShieldCheck, Terminal, Wifi } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/utils/cn';
@@ -75,7 +74,13 @@ export function HeroVisual() {
         ))}
       </svg>
 
-      {/* Orbiting technology icons */}
+      {/*
+        Orbiting technology icons.
+
+        Three nested transforms keep each tile upright while the ring turns:
+        the outer ring spins, the middle span places the tile on the circle,
+        and the inner span counter-spins at the same rate.
+      */}
       <div
         className={cn(
           'absolute inset-0 hidden sm:block',
@@ -85,12 +90,22 @@ export function HeroVisual() {
         {ORBIT_ICONS.map(({ Icon, label, angle }) => (
           <span
             key={label}
-            className="absolute top-1/2 left-1/2 grid size-10 place-items-center rounded-xl border border-white/10 bg-navy-800/80 backdrop-blur-sm"
-            style={{
-              transform: `rotate(${angle}deg) translateX(11.5rem) rotate(-${angle}deg) translate(-50%, -50%)`,
-            }}
+            className="absolute top-1/2 left-1/2 -mt-5 -ml-5 block size-10"
+            style={{ transform: `rotate(${angle}deg) translateY(-11.5rem)` }}
           >
-            <Icon className="size-4 text-brand-300" />
+            <span
+              className={cn(
+                'block size-10',
+                !prefersReducedMotion && 'animate-spin-slower-reverse',
+              )}
+            >
+              <span
+                className="grid size-10 place-items-center rounded-xl border border-white/10 bg-navy-800/80 backdrop-blur-sm"
+                style={{ transform: `rotate(${-angle}deg)` }}
+              >
+                <Icon className="size-4 text-brand-300" />
+              </span>
+            </span>
           </span>
         ))}
       </div>
@@ -98,11 +113,7 @@ export function HeroVisual() {
       {/* Shield + laptop stack */}
       <div className="relative flex flex-col items-center gap-6 px-6 py-10 sm:px-14">
         {/* Cyber shield */}
-        <motion.div
-          animate={prefersReducedMotion ? undefined : { y: [0, -10, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-          className="relative"
-        >
+        <div className={cn('relative', !prefersReducedMotion && 'animate-float')}>
           <span className="absolute inset-0 rounded-full bg-brand-500/25 blur-2xl" />
           <span className="relative grid size-24 place-items-center rounded-3xl border border-brand-400/30 bg-gradient-to-br from-brand-600/30 to-navy-800/80 backdrop-blur-sm sm:size-28">
             <ShieldCheck className="size-11 text-brand-300 sm:size-13" strokeWidth={1.6} />
@@ -116,13 +127,12 @@ export function HeroVisual() {
               />
             </span>
           </span>
-        </motion.div>
+        </div>
 
         {/* Laptop */}
-        <motion.div
-          animate={prefersReducedMotion ? undefined : { y: [0, 8, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-          className="w-full"
+        <div
+          className={cn('w-full', !prefersReducedMotion && 'animate-float-slow')}
+          style={{ animationDelay: '0.6s' }}
         >
           {/* Screen */}
           <div className="rounded-t-xl border border-white/12 border-b-0 bg-navy-900/90 p-2 shadow-2xl shadow-navy-950/60 backdrop-blur">
@@ -140,12 +150,14 @@ export function HeroVisual() {
               {/* Code lines */}
               <div className="flex flex-col gap-2">
                 {CODE_LINES.map((line, index) => (
-                  <motion.span
+                  <span
                     key={index}
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    animate={{ scaleX: 1, opacity: 1 }}
-                    transition={{ delay: 0.5 + index * 0.12, duration: 0.5 }}
-                    className={cn('h-1.5 origin-left rounded-full', line.width, line.color)}
+                    className={cn(
+                      'h-1.5 origin-left animate-grow-x rounded-full',
+                      line.width,
+                      line.color,
+                    )}
+                    style={{ animationDelay: `${500 + index * 120}ms` }}
                   />
                 ))}
                 <span className="mt-1 flex items-center gap-2 font-mono text-[10px] text-emerald-400/80">
@@ -160,27 +172,30 @@ export function HeroVisual() {
           {/* Base */}
           <div className="h-2.5 rounded-b-xl bg-gradient-to-b from-slate-600/60 to-slate-800/60" />
           <div className="mx-auto h-1 w-1/4 rounded-b-lg bg-slate-700/60" />
-        </motion.div>
+        </div>
       </div>
 
       {/* Floating status chips */}
-      <motion.span
-        animate={prefersReducedMotion ? undefined : { y: [0, -12, 0] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-8 -left-2 hidden items-center gap-2 rounded-xl border border-white/10 bg-navy-800/85 px-3 py-2 text-xs font-medium text-slate-200 backdrop-blur sm:flex"
+      <span
+        className={cn(
+          'absolute top-8 -left-2 hidden items-center gap-2 rounded-xl border border-white/10 bg-navy-800/85 px-3 py-2 text-xs font-medium text-slate-200 backdrop-blur sm:flex',
+          !prefersReducedMotion && 'animate-float',
+        )}
       >
         <span className="size-2 rounded-full bg-emerald-400" />
         Threats blocked
-      </motion.span>
+      </span>
 
-      <motion.span
-        animate={prefersReducedMotion ? undefined : { y: [0, 12, 0] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-        className="absolute right-0 bottom-12 hidden items-center gap-2 rounded-xl border border-white/10 bg-navy-800/85 px-3 py-2 text-xs font-medium text-slate-200 backdrop-blur sm:flex"
+      <span
+        className={cn(
+          'absolute right-0 bottom-12 hidden items-center gap-2 rounded-xl border border-white/10 bg-navy-800/85 px-3 py-2 text-xs font-medium text-slate-200 backdrop-blur sm:flex',
+          !prefersReducedMotion && 'animate-float-slow',
+        )}
+        style={{ animationDelay: '0.8s' }}
       >
         <span className="size-2 rounded-full bg-brand-400" />
         99.9% uptime
-      </motion.span>
+      </span>
     </div>
   );
 }

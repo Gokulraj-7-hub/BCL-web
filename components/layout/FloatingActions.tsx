@@ -1,9 +1,9 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUp, MessageCircle } from 'lucide-react';
 import { COMPANY } from '@/constants/company';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
+import { cn } from '@/utils/cn';
 
 const WHATSAPP_MESSAGE = encodeURIComponent(
   `Hello ${COMPANY.shortName}, I would like to know more about your services.`,
@@ -12,6 +12,9 @@ const WHATSAPP_MESSAGE = encodeURIComponent(
 /**
  * Floating WhatsApp shortcut (always visible) and a back-to-top control that
  * appears once the visitor has scrolled a reasonable distance.
+ *
+ * Rendered on every page, so the entrance animation is CSS — importing Framer
+ * Motion here would pull the library into the initial bundle site-wide.
  */
 export function FloatingActions() {
   const { y } = useScrollPosition();
@@ -24,22 +27,21 @@ export function FloatingActions() {
 
   return (
     <div className="fixed right-4 bottom-4 z-70 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
-      <AnimatePresence>
-        {showBackToTop && (
-          <motion.button
-            type="button"
-            onClick={scrollToTop}
-            aria-label="Back to top"
-            initial={{ opacity: 0, scale: 0.7, y: 12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.7, y: 12 }}
-            transition={{ duration: 0.2 }}
-            className="grid size-11 place-items-center rounded-full border border-white/15 bg-navy-800/90 text-brand-300 shadow-lg backdrop-blur transition-colors hover:border-brand-400/50 hover:bg-brand-600 hover:text-white sm:size-12"
-          >
-            <ArrowUp className="size-5" aria-hidden="true" />
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {showBackToTop && (
+        <button
+          type="button"
+          onClick={scrollToTop}
+          aria-label="Back to top"
+          className={cn(
+            'grid size-11 animate-enter place-items-center rounded-full border border-white/15',
+            'bg-navy-800/90 text-brand-300 shadow-lg backdrop-blur transition-colors',
+            'hover:border-brand-400/50 hover:bg-brand-600 hover:text-white sm:size-12',
+          )}
+          style={{ animationDuration: '0.25s' }}
+        >
+          <ArrowUp className="size-5" aria-hidden="true" />
+        </button>
+      )}
 
       <a
         href={`https://wa.me/${COMPANY.contact.whatsapp}?text=${WHATSAPP_MESSAGE}`}

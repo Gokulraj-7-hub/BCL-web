@@ -1,13 +1,12 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Award, CalendarDays, GraduationCap, MonitorSmartphone, Sparkles } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
 import { INTERNSHIPS } from '@/constants/training';
-import { fadeInUp, staggerContainer, viewportOnce } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { scrollToSection } from '@/utils/dom';
 import type { InternshipProgram } from '@/types';
 
@@ -33,30 +32,18 @@ export function Internships() {
           description="A real deliverable, a named mentor, a review cadence and a verifiable certificate — across five specialisations."
         />
 
-        <motion.ul
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
-        >
+        <ul className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {INTERNSHIPS.map((program) => (
-            <motion.li key={program.id} variants={fadeInUp} className="h-full">
+            <Reveal as="li" key={program.id} className="h-full">
               <InternshipCard program={program} />
-            </motion.li>
+            </Reveal>
           ))}
-        </motion.ul>
+        </ul>
 
-        <motion.p
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          className="mx-auto mt-10 max-w-2xl text-center text-sm text-slate-400"
-        >
+        <Reveal as="p" className="mx-auto mt-10 max-w-2xl text-center text-sm text-slate-400">
           Applications are open year-round. Mention your preferred track, duration and start month
           in the contact form and our team will get back to you with the batch schedule.
-        </motion.p>
+        </Reveal>
       </Container>
     </section>
   );
@@ -93,24 +80,29 @@ function InternshipCard({ program }: { program: InternshipProgram }) {
       </h3>
       <p className="mt-2.5 text-sm leading-relaxed text-slate-400">{program.description}</p>
 
-      <dl className="mt-5 flex flex-col gap-3 border-t border-white/8 pt-5">
+      {/*
+        `<dl>` only allows `<dt>`/`<dd>` children (or one wrapping `<div>` that
+        contains nothing else), which cannot accommodate the icon column. A
+        list conveys the same label/value pairing and stays valid.
+      */}
+      <ul className="mt-5 flex flex-col gap-3 border-t border-white/8 pt-5">
         {details.map(({ label, value, Icon }) => (
-          <div key={label} className="flex gap-3">
+          <li key={label} className="flex gap-3">
             <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-white/[0.04] text-brand-400">
               <Icon className="size-3.5" aria-hidden="true" />
             </span>
             <div className="min-w-0">
-              <dt className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
                 {label}
-              </dt>
-              <dd className="mt-0.5 text-sm leading-snug text-slate-300">{value}</dd>
+              </p>
+              <p className="mt-0.5 text-sm leading-snug text-slate-300">{value}</p>
             </div>
-          </div>
+          </li>
         ))}
-      </dl>
+      </ul>
 
       <div className="mt-5 border-t border-white/8 pt-5">
-        <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+        <p className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
           Skills Covered
         </p>
         <ul className="mt-3 flex flex-wrap gap-2">

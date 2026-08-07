@@ -1,6 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { Clock, Mail, MapPin, Phone, User } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -12,7 +9,7 @@ import {
   GOOGLE_MAPS_EMBED_URL,
   GOOGLE_MAPS_LINK,
 } from '@/constants/company';
-import { slideInLeft, slideInRight, viewportOnce } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 
 /** Contact details, business hours, an embedded map and the enquiry form. */
 export function Contact() {
@@ -34,13 +31,7 @@ export function Contact() {
 
         <div className="mt-14 grid gap-8 lg:grid-cols-12">
           {/* Details column */}
-          <motion.div
-            variants={slideInLeft}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-            className="flex flex-col gap-6 lg:col-span-5"
-          >
+          <Reveal direction="left" className="flex flex-col gap-6 lg:col-span-5">
             <GlassCard className="p-7">
               <h3 className="text-xl">Get in Touch</h3>
 
@@ -88,7 +79,7 @@ export function Contact() {
                         <span className="text-slate-300">{slot.days}</span>
                         <span
                           className={
-                            slot.hours === 'Closed' ? 'text-slate-500' : 'font-medium text-white'
+                            slot.hours === 'Closed' ? 'text-slate-400' : 'font-medium text-white'
                           }
                         >
                           {slot.hours}
@@ -113,16 +104,10 @@ export function Contact() {
                 className="block w-full grayscale-[0.35] transition-[filter] duration-500 hover:grayscale-0"
               />
             </div>
-          </motion.div>
+          </Reveal>
 
           {/* Form column */}
-          <motion.div
-            variants={slideInRight}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-            className="lg:col-span-7"
-          >
+          <Reveal direction="right" className="lg:col-span-7">
             <GlassCard hoverLift={false} className="p-7 sm:p-8">
               <h3 className="text-xl">Send Us a Message</h3>
               <p className="mt-2 text-sm text-slate-400">
@@ -134,7 +119,7 @@ export function Contact() {
                 <ContactForm />
               </div>
             </GlassCard>
-          </motion.div>
+          </Reveal>
         </div>
       </Container>
     </section>
@@ -156,7 +141,7 @@ function ContactRow({
         <Icon className="size-4.5" aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">{label}</p>
+        <p className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">{label}</p>
         <div className="mt-1 text-sm">{children}</div>
       </div>
     </li>

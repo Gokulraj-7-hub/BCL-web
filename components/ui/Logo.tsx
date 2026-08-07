@@ -25,8 +25,11 @@ export function Logo({ className, withText = true, size = 40 }: LogoProps) {
         viewBox="0 0 64 64"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        role="img"
-        aria-label={`${COMPANY.shortName} logo`}
+        // With the wordmark alongside it the monogram is redundant to a screen
+        // reader; without it, the mark has to carry the company name itself.
+        {...(withText
+          ? { 'aria-hidden': true as const }
+          : { role: 'img', 'aria-label': `${COMPANY.shortName} logo` })}
         className="shrink-0"
       >
         <rect width="64" height="64" rx="12" fill="#ffffff" />
@@ -53,13 +56,7 @@ export function Logo({ className, withText = true, size = 40 }: LogoProps) {
         <circle cx="38.5" cy="28.8" r="2.6" fill="#0a1128" />
         <circle cx="52" cy="43" r="2" fill="#2b8cee" />
         <circle cx="58" cy="46.5" r="1.4" fill="#60b4fa" />
-        <path
-          d="M31 44h9l4-4"
-          stroke="#2b8cee"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-        />
+        <path d="M31 44h9l4-4" stroke="#2b8cee" strokeWidth="2" strokeLinecap="round" fill="none" />
         <circle cx="30" cy="44" r="2" fill="#1a6fdc" />
       </svg>
 

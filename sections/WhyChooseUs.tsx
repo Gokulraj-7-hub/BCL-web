@@ -1,12 +1,9 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { WHY_CHOOSE_US } from '@/constants/services';
 import { COMPANY } from '@/constants/company';
-import { fadeInUp, staggerContainer, viewportOnce } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 
 /** Animated feature grid explaining what sets BugCap Labs apart. */
 export function WhyChooseUs() {
@@ -21,15 +18,9 @@ export function WhyChooseUs() {
           description="Eight reasons businesses trust us with their systems and students trust us with their careers."
         />
 
-        <motion.ul
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
-        >
+        <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {WHY_CHOOSE_US.map((feature) => (
-            <motion.li key={feature.title} variants={fadeInUp}>
+            <Reveal as="li" key={feature.title}>
               <GlassCard tilt spotlight className="h-full p-6">
                 {/* Icon tile */}
                 <span className="relative inline-grid size-12 place-items-center rounded-xl bg-gradient-to-br from-brand-500/25 to-brand-700/15 text-brand-300 transition-all duration-300 group-hover:from-brand-500 group-hover:to-brand-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-brand-600/30">
@@ -49,9 +40,9 @@ export function WhyChooseUs() {
                   className="mt-5 block h-0.5 w-8 rounded-full bg-brand-500/50 transition-all duration-300 group-hover:w-16 group-hover:bg-brand-400"
                 />
               </GlassCard>
-            </motion.li>
+            </Reveal>
           ))}
-        </motion.ul>
+        </ul>
       </Container>
     </section>
   );

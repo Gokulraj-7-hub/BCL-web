@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, Phone, X } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
@@ -17,6 +16,10 @@ import { cn } from '@/utils/cn';
 /**
  * Sticky navigation: transparent over the hero, solid glass once scrolled.
  * Includes a scroll-spy highlight and a full-screen mobile drawer.
+ *
+ * Animation here is CSS rather than Framer Motion. The navbar renders on every
+ * page, so importing the animation library from it would put ~45 kB into the
+ * initial bundle for effects a transition handles just as well.
  */
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -65,10 +68,15 @@ export function Navbar() {
       >
         <nav aria-label="Main navigation" className="container-page">
           <div className="flex items-center justify-between gap-4">
+            {/*
+              No `aria-label` here: WCAG 2.5.3 requires the accessible name to
+              contain the visible text, and the logo's wordmark already reads
+              "BugCap Labs Pvt. Ltd." — overriding it with a different string
+              would break voice-control users saying what they can see.
+            */}
             <Link
               href="#home"
               onClick={(event) => handleNavClick(event, '#home')}
-              aria-label={`${COMPANY.name} — back to top`}
               className="rounded-lg transition-opacity hover:opacity-85"
             >
               <Logo size={scrolled ? 36 : 42} />
@@ -90,13 +98,13 @@ export function Navbar() {
                       )}
                     >
                       {item.label}
-                      {isActive && (
-                        <motion.span
-                          layoutId="nav-active-indicator"
-                          className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-brand-400"
-                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                        />
-                      )}
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          'absolute inset-x-3 -bottom-0.5 h-0.5 origin-left rounded-full bg-brand-400 transition-transform duration-300',
+                          isActive ? 'scale-x-100' : 'scale-x-0',
+                        )}
+                      />
                     </a>
                   </li>
                 );
@@ -104,13 +112,18 @@ export function Navbar() {
             </ul>
 
             <div className="hidden items-center gap-3 lg:flex">
+              {/*
+                The number is hidden below `xl` to save space, so the label
+                lives on the anchor itself — that keeps one accessible name at
+                every breakpoint instead of duplicating it in an sr-only span.
+              */}
               <a
                 href={`tel:${COMPANY.contact.phoneRaw}`}
+                aria-label={`Call ${COMPANY.shortName} on ${COMPANY.contact.phone}`}
                 className="flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-slate-300 transition-colors hover:text-brand-300"
               >
                 <Phone className="size-4" aria-hidden="true" />
                 <span className="hidden xl:inline">{COMPANY.contact.phone}</span>
-                <span className="sr-only xl:hidden">Call {COMPANY.contact.phone}</span>
               </a>
               <Button href="#contact" size="sm">
                 Get in Touch
@@ -146,60 +159,55 @@ export function Navbar() {
         />
       </header>
 
-      {/* Mobile drawer */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-0 top-[68px] z-80 max-h-[calc(100dvh-68px)] overflow-y-auto border-b border-white/10 glass-strong lg:hidden"
-          >
-            <nav aria-label="Mobile navigation" className="container-page py-6">
-              <ul className="flex flex-col gap-1">
-                {NAV_ITEMS.map((item, index) => (
-                  <motion.li
-                    key={item.href}
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.04, duration: 0.25 }}
-                  >
-                    <a
-                      href={item.href}
-                      onClick={(event) => handleNavClick(event, item.href)}
-                      aria-current={item.sectionId === activeSection ? 'page' : undefined}
-                      className={cn(
-                        'block rounded-xl px-4 py-3.5 text-base font-medium transition-colors',
-                        item.sectionId === activeSection
-                          ? 'bg-brand-500/12 text-brand-300'
-                          : 'text-slate-300 hover:bg-white/5 hover:text-white',
-                      )}
-                    >
-                      {item.label}
-                    </a>
-                  </motion.li>
-                ))}
-              </ul>
-
-              <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-5">
-                <Button href={`tel:${COMPANY.contact.phoneRaw}`} variant="secondary" fullWidth>
-                  <Phone className="size-4" aria-hidden="true" />
-                  {COMPANY.contact.phone}
-                </Button>
-                <Button
-                  href="#contact"
-                  fullWidth
-                  onClick={() => setIsMenuOpen(false)}
+      {/*
+        Mobile drawer. Unmounted when closed so its links never become hidden
+        keyboard traps; the entrance animation is CSS.
+      */}
+      {isMenuOpen && (
+        <div
+          id="mobile-menu"
+          // Near-opaque rather than frosted: at this size the hero copy showed
+          // through the glass and made the menu unreadable.
+          className="fixed inset-x-0 top-[68px] z-80 max-h-[calc(100dvh-68px)] animate-enter overflow-y-auto border-b border-white/10 bg-navy-950/98 shadow-2xl shadow-navy-950 backdrop-blur-xl lg:hidden"
+          style={{ animationDuration: '0.25s' }}
+        >
+          <nav aria-label="Mobile navigation" className="container-page py-6">
+            <ul className="flex flex-col gap-1">
+              {NAV_ITEMS.map((item, index) => (
+                <li
+                  key={item.href}
+                  className="animate-enter"
+                  style={{ animationDelay: `${index * 40}ms`, animationDuration: '0.25s' }}
                 >
-                  Get in Touch
-                </Button>
-              </div>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  <a
+                    href={item.href}
+                    onClick={(event) => handleNavClick(event, item.href)}
+                    aria-current={item.sectionId === activeSection ? 'page' : undefined}
+                    className={cn(
+                      'block rounded-xl px-4 py-3.5 text-base font-medium transition-colors',
+                      item.sectionId === activeSection
+                        ? 'bg-brand-500/12 text-brand-300'
+                        : 'text-slate-300 hover:bg-white/5 hover:text-white',
+                    )}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-5">
+              <Button href={`tel:${COMPANY.contact.phoneRaw}`} variant="secondary" fullWidth>
+                <Phone className="size-4" aria-hidden="true" />
+                {COMPANY.contact.phone}
+              </Button>
+              <Button href="#contact" fullWidth onClick={() => setIsMenuOpen(false)}>
+                Get in Touch
+              </Button>
+            </div>
+          </nav>
+        </div>
+      )}
     </>
   );
 }

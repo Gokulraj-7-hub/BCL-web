@@ -1,13 +1,10 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { ArrowRight, Check } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
 import { SERVICES } from '@/constants/services';
-import { fadeInUp, staggerContainer, viewportOnce } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/utils/cn';
 
 /** Premium service cards covering the full BugCap Labs offering. */
@@ -28,15 +25,9 @@ export function Services() {
           description="From the first line of code to the firewall in front of it — and the people trained to run both."
         />
 
-        <motion.ul
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4"
-        >
+        <ul className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {SERVICES.map((service) => (
-            <motion.li key={service.id} variants={fadeInUp} className="h-full">
+            <Reveal as="li" key={service.id} className="h-full">
               <GlassCard spotlight className="flex h-full flex-col p-6 sm:p-7">
                 {/* Gradient icon tile */}
                 <span
@@ -79,18 +70,12 @@ export function Services() {
                   <span className="sr-only"> — {service.title}</span>
                 </a>
               </GlassCard>
-            </motion.li>
+            </Reveal>
           ))}
-        </motion.ul>
+        </ul>
 
         {/* Section CTA */}
-        <motion.div
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          className="mt-14"
-        >
+        <Reveal className="mt-14">
           <div className="relative overflow-hidden rounded-2xl border border-brand-500/25 bg-gradient-to-r from-brand-900/40 via-navy-800/60 to-navy-900/60 p-8 text-center sm:p-10">
             <div
               aria-hidden="true"
@@ -112,7 +97,7 @@ export function Services() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </Reveal>
       </Container>
     </section>
   );

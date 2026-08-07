@@ -1,7 +1,6 @@
 'use client';
 
 import { useId, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
@@ -85,24 +84,31 @@ export function Accordion({ items, allowMultiple = false, className }: Accordion
               </button>
             </h3>
 
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  id={panelId}
-                  role="region"
-                  aria-labelledby={headerId}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                  className="overflow-hidden"
-                >
-                  <p className="px-5 pb-5 text-sm leading-relaxed text-slate-400 sm:px-6 sm:pb-6 sm:text-base">
-                    {item.answer}
-                  </p>
-                </motion.div>
+            {/*
+              Auto-height without an animation library: a grid row transitions
+              from `0fr` to `1fr`, which animates to the content's intrinsic
+              height. The panel stays mounted so `aria-controls` always points
+              at a real element, and `inert` keeps its text out of the
+              accessibility tree and tab order while collapsed.
+            */}
+            <div
+              id={panelId}
+              role="region"
+              aria-labelledby={headerId}
+              className={cn(
+                'grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
               )}
-            </AnimatePresence>
+            >
+              <div className="overflow-hidden">
+                <p
+                  inert={!isOpen}
+                  className="px-5 pb-5 text-sm leading-relaxed text-slate-400 sm:px-6 sm:pb-6 sm:text-base"
+                >
+                  {item.answer}
+                </p>
+              </div>
+            </div>
           </div>
         );
       })}

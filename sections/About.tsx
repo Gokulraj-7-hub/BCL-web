@@ -1,12 +1,9 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { Building2, Quote } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { COMPANY, CORE_VALUES, MISSION_VISION, TIMELINE } from '@/constants/company';
-import { fadeInUp, slideInLeft, slideInRight, staggerContainer, viewportOnce } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/utils/cn';
 
 /**
@@ -32,13 +29,7 @@ export function About() {
 
         {/* Introduction + mission/vision */}
         <div className="mt-14 grid gap-8 lg:grid-cols-12 lg:gap-10">
-          <motion.div
-            variants={slideInLeft}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-            className="lg:col-span-5"
-          >
+          <Reveal direction="left" className="lg:col-span-5">
             <GlassCard spotlight className="h-full p-7 sm:p-8">
               <span className="inline-grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-lg shadow-brand-900/40">
                 <Building2 className="size-6" aria-hidden="true" />
@@ -73,15 +64,9 @@ export function About() {
                 </figcaption>
               </figure>
             </GlassCard>
-          </motion.div>
+          </Reveal>
 
-          <motion.div
-            variants={slideInRight}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-            className="flex flex-col gap-6 lg:col-span-7"
-          >
+          <Reveal direction="right" className="flex flex-col gap-6 lg:col-span-7">
             <div className="grid gap-6 sm:grid-cols-2">
               {[MISSION_VISION.mission, MISSION_VISION.vision].map((item) => (
                 <GlassCard key={item.title} tilt className="p-6 sm:p-7">
@@ -97,15 +82,9 @@ export function About() {
             {/* Core values */}
             <div>
               <h3 className="text-xl">Core Values</h3>
-              <motion.ul
-                variants={staggerContainer}
-                initial="hidden"
-                whileInView="visible"
-                viewport={viewportOnce}
-                className="mt-4 grid gap-4 sm:grid-cols-2"
-              >
+              <ul className="mt-4 grid gap-4 sm:grid-cols-2">
                 {CORE_VALUES.map((value) => (
-                  <motion.li key={value.title} variants={fadeInUp}>
+                  <Reveal as="li" key={value.title}>
                     <div className="group flex h-full gap-4 rounded-xl border border-white/8 bg-white/[0.02] p-5 transition-all duration-300 hover:border-brand-400/35 hover:bg-brand-500/[0.05]">
                       <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-brand-500/12 text-brand-300 transition-transform duration-300 group-hover:scale-110">
                         <value.icon className="size-5" aria-hidden="true" />
@@ -119,11 +98,11 @@ export function About() {
                         </p>
                       </div>
                     </div>
-                  </motion.li>
+                  </Reveal>
                 ))}
-              </motion.ul>
+              </ul>
             </div>
-          </motion.div>
+          </Reveal>
         </div>
 
         {/* Timeline */}
@@ -146,12 +125,9 @@ export function About() {
               const isLeft = index % 2 === 0;
 
               return (
-                <motion.li
+                <Reveal
+                  as="li"
                   key={event.year}
-                  initial={{ opacity: 0, y: 28 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5 }}
                   className={cn(
                     'relative mb-8 pl-12 last:mb-0 md:mb-12 md:w-1/2 md:pl-0',
                     isLeft ? 'md:mr-auto md:pr-10' : 'md:ml-auto md:pl-10',
@@ -178,7 +154,7 @@ export function About() {
                       {event.description}
                     </p>
                   </GlassCard>
-                </motion.li>
+                </Reveal>
               );
             })}
           </ol>

@@ -10,9 +10,7 @@ import { contactSchema, type ContactFormValues } from '@/lib/validation';
 import type { ContactApiResponse } from '@/types';
 
 type SubmitStatus =
-  | { state: 'idle' }
-  | { state: 'success'; message: string }
-  | { state: 'error'; message: string };
+  { state: 'idle' } | { state: 'success'; message: string } | { state: 'error'; message: string };
 
 /**
  * Contact form.
@@ -173,7 +171,7 @@ export function ContactForm() {
         {isSubmitting ? 'Sending…' : 'Send Message'}
       </Button>
 
-      <p className="text-center text-xs text-slate-500">
+      <p className="text-center text-xs text-slate-400">
         By submitting this form you agree to be contacted about your enquiry. We never share your
         details with third parties.
       </p>

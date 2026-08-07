@@ -1,9 +1,6 @@
-'use client';
-
 import type { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/utils/cn';
-import { fadeInUp, staggerContainer } from '@/lib/motion';
 
 interface SectionHeadingProps {
   /** Small uppercase label above the title. */
@@ -19,6 +16,12 @@ interface SectionHeadingProps {
   id?: string;
 }
 
+/**
+ * Shared section heading: eyebrow, gradient-highlighted title, description and
+ * an accent rule, revealed with a short stagger as it scrolls into view.
+ *
+ * A server component — `Reveal` is the only client code involved.
+ */
 export function SectionHeading({
   eyebrow,
   title,
@@ -30,11 +33,7 @@ export function SectionHeading({
   id,
 }: SectionHeadingProps) {
   return (
-    <motion.div
-      variants={staggerContainer}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.4 }}
+    <div
       className={cn(
         'flex max-w-3xl flex-col gap-4',
         align === 'center' ? 'mx-auto items-center text-center' : 'items-start text-left',
@@ -42,36 +41,38 @@ export function SectionHeading({
       )}
     >
       {eyebrow && (
-        <motion.span
-          variants={fadeInUp}
-          className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-300"
+        <Reveal
+          as="span"
+          className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-brand-300 uppercase"
         >
           <span className="size-1.5 rounded-full bg-brand-400" aria-hidden="true" />
           {eyebrow}
-        </motion.span>
+        </Reveal>
       )}
 
-      <motion.div variants={fadeInUp}>
+      <Reveal delay={80}>
         <Heading id={id} className="text-3xl leading-tight sm:text-4xl lg:text-[2.75rem]">
           {title}
           {highlight && <span className="text-gradient-brand"> {highlight}</span>}
         </Heading>
-      </motion.div>
+      </Reveal>
 
       {description && (
-        <motion.p
-          variants={fadeInUp}
+        <Reveal
+          as="p"
+          delay={160}
           className="max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg"
         >
           {description}
-        </motion.p>
+        </Reveal>
       )}
 
-      <motion.span
-        variants={fadeInUp}
+      <Reveal
+        as="span"
+        delay={240}
         aria-hidden="true"
         className="h-1 w-20 rounded-full bg-gradient-to-r from-brand-500 to-brand-300"
       />
-    </motion.div>
+    </div>
   );
 }

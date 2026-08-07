@@ -1,10 +1,7 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { TECHNOLOGIES } from '@/constants/technologies';
-import { fadeInUp, viewportOnce } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/utils/cn';
 import type { Technology } from '@/types';
 
@@ -36,16 +33,10 @@ export function Technologies() {
         />
       </Container>
 
-      <motion.div
-        variants={fadeInUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={viewportOnce}
-        className="mt-14 flex flex-col gap-5"
-      >
+      <Reveal className="mt-14 flex flex-col gap-5">
         <MarqueeRow items={firstRow} direction="left" />
         <MarqueeRow items={secondRow} direction="right" />
-      </motion.div>
+      </Reveal>
     </section>
   );
 }
@@ -77,7 +68,13 @@ function MarqueeRow({
   );
 }
 
-function TechnologyTile({ tech, 'aria-hidden': ariaHidden }: { tech: Technology; 'aria-hidden'?: boolean }) {
+function TechnologyTile({
+  tech,
+  'aria-hidden': ariaHidden,
+}: {
+  tech: Technology;
+  'aria-hidden'?: boolean;
+}) {
   return (
     <li
       aria-hidden={ariaHidden}

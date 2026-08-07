@@ -37,7 +37,7 @@ export function LegalPage({ title, lastUpdated, intro, sections }: LegalPageProp
         </Link>
 
         <h1 className="mt-6 text-3xl sm:text-4xl">{title}</h1>
-        <p className="mt-3 text-sm text-slate-500">Last updated: {lastUpdated}</p>
+        <p className="mt-3 text-sm text-slate-400">Last updated: {lastUpdated}</p>
         <p className="mt-6 leading-relaxed text-slate-300">{intro}</p>
 
         <div className="mt-10 flex flex-col gap-9">

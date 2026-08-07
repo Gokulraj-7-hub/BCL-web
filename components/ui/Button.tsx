@@ -34,8 +34,7 @@ interface BaseProps {
 }
 
 export interface ButtonProps
-  extends BaseProps,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps> {
+  extends BaseProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps> {
   /** When set, renders an anchor. In-page hashes get smooth scrolling. */
   href?: string;
   /** Opens the link in a new tab with safe `rel` attributes. */

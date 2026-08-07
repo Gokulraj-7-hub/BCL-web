@@ -127,7 +127,14 @@ export function ParticleField({ density = 70, className }: ParticleFieldProps) {
     };
 
     seed();
-    start();
+
+    // Wait for the main thread to go idle before starting the loop, so the
+    // canvas never competes with hydration during the page's busiest moment.
+    // Safari lacks requestIdleCallback, hence the timeout fallback.
+    const supportsIdleCallback = typeof window.requestIdleCallback === 'function';
+    const idleHandle = supportsIdleCallback
+      ? window.requestIdleCallback(start, { timeout: 2000 })
+      : window.setTimeout(start, 1200);
 
     // Pause when the canvas scrolls off-screen.
     const observer = new IntersectionObserver(
@@ -155,6 +162,8 @@ export function ParticleField({ density = 70, className }: ParticleFieldProps) {
 
     return () => {
       stop();
+      if (supportsIdleCallback) window.cancelIdleCallback(idleHandle);
+      else window.clearTimeout(idleHandle);
       observer.disconnect();
       document.removeEventListener('visibilitychange', onVisibilityChange);
       window.removeEventListener('resize', onResize);

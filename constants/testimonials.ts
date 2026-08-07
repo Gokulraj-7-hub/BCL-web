@@ -11,7 +11,7 @@ import type { Testimonial } from '@/types';
 export const TESTIMONIALS: readonly Testimonial[] = [
   {
     id: 't1',
-    name: 'Placeholder — Student Name',
+    name: 'Placeholder Student',
     role: 'Cyber Security Trainee',
     quote:
       'The lab time was the difference. Instead of slides about the OWASP Top 10 we spent weeks actually exploiting and then fixing vulnerable applications, and I could talk about all of it in interviews.',
@@ -20,7 +20,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     id: 't2',
-    name: 'Placeholder — Client Name',
+    name: 'Placeholder Client',
     role: 'Operations Head',
     company: 'Manufacturing Client',
     quote:
@@ -30,7 +30,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     id: 't3',
-    name: 'Placeholder — Student Name',
+    name: 'Placeholder Student',
     role: 'Full Stack Development Intern',
     quote:
       'My internship was run like a real sprint — a ticket board, code review on every pull request, and a demo each Friday. The certificate mattered less than the GitHub history I walked away with.',
@@ -39,7 +39,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     id: 't4',
-    name: 'Placeholder — Corporate Contact',
+    name: 'Placeholder Contact',
     role: 'IT Manager',
     company: 'Textile Group',
     quote:
@@ -49,7 +49,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     id: 't5',
-    name: 'Placeholder — Student Name',
+    name: 'Placeholder Student',
     role: 'Cloud Computing Trainee',
     quote:
       'Went in knowing only Linux basics and came out able to deploy a containerised app to AWS with a CI/CD pipeline behind it. The mentor sessions were the part that made it stick.',
@@ -58,7 +58,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     id: 't6',
-    name: 'Placeholder — Client Name',
+    name: 'Placeholder Client',
     role: 'Founder',
     company: 'E-Commerce Startup',
     quote:
@@ -68,7 +68,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     id: 't7',
-    name: 'Placeholder — Student Name',
+    name: 'Placeholder Student',
     role: 'Placement Program Participant',
     quote:
       'Resume review, three mock interviews and honest feedback after each one. The technical round questions were close enough to the real thing that nothing surprised me.',
@@ -77,7 +77,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     id: 't8',
-    name: 'Placeholder — Corporate Contact',
+    name: 'Placeholder Contact',
     role: 'Systems Administrator',
     company: 'Education Trust',
     quote:

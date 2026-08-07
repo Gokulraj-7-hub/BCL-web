@@ -1,14 +1,13 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
 import { MessageSquareText } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Accordion } from '@/components/ui/Accordion';
 import { Button } from '@/components/ui/Button';
 import { FAQS } from '@/constants/faq';
-import { fadeInUp, viewportOnce } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/utils/cn';
 import type { FaqCategory } from '@/types';
 
@@ -29,8 +28,7 @@ export function Faq() {
   const [activeCategory, setActiveCategory] = useState<Filter>('All');
 
   const visibleFaqs = useMemo(
-    () =>
-      activeCategory === 'All' ? FAQS : FAQS.filter((faq) => faq.category === activeCategory),
+    () => (activeCategory === 'All' ? FAQS : FAQS.filter((faq) => faq.category === activeCategory)),
     [activeCategory],
   );
 
@@ -73,24 +71,12 @@ export function Faq() {
             })}
           </div>
 
-          <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-            className="mt-8"
-          >
+          <Reveal className="mt-8">
             <Accordion key={activeCategory} items={visibleFaqs} />
-          </motion.div>
+          </Reveal>
 
           {/* Fallback CTA */}
-          <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-            className="mt-10 flex flex-col items-center gap-5 rounded-2xl border border-brand-500/25 bg-brand-500/[0.06] p-7 text-center sm:flex-row sm:justify-between sm:text-left"
-          >
+          <Reveal className="mt-10 flex flex-col items-center gap-5 rounded-2xl border border-brand-500/25 bg-brand-500/[0.06] p-7 text-center sm:flex-row sm:justify-between sm:text-left">
             <div className="flex items-center gap-4">
               <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand-500/15 text-brand-300">
                 <MessageSquareText className="size-6" aria-hidden="true" />
@@ -107,7 +93,7 @@ export function Faq() {
             <Button href="#contact" className="shrink-0">
               Ask Us Directly
             </Button>
-          </motion.div>
+          </Reveal>
         </div>
       </Container>
     </section>

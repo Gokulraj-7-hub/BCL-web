@@ -1,6 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { ArrowRight, GraduationCap, Mail, ShieldCheck, Sparkles } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
@@ -9,11 +6,14 @@ import { GridBackdrop } from '@/components/background/GridBackdrop';
 import { ParticleField } from '@/components/background/ParticleField';
 import { HeroVisual } from '@/sections/HeroVisual';
 import { COMPANY, HERO_HIGHLIGHTS } from '@/constants/company';
-import { fadeInUp, slideInRight, staggerContainer } from '@/lib/motion';
 
 /**
  * Full-screen hero: headline, rotating specialisation line, primary calls to
  * action, and an animated cyber-shield visual on the right.
+ *
+ * This is a server component and its entrance animations are pure CSS. The
+ * headline is the Largest Contentful Paint element, so it is rendered at full
+ * opacity in the initial HTML rather than being faded in by JavaScript.
  */
 export function Hero() {
   return (
@@ -28,52 +28,52 @@ export function Hero() {
       <Container className="relative z-10">
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
           {/* Copy */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col items-start gap-6 lg:col-span-7"
-          >
-            <motion.div
-              variants={fadeInUp}
-              className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-2 text-xs font-medium text-brand-200 sm:text-sm"
+          <div className="flex flex-col items-start gap-6 lg:col-span-7">
+            <div
+              className="inline-flex animate-enter items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-2 text-xs font-medium text-brand-200 sm:text-sm"
+              style={{ animationDelay: '80ms' }}
             >
               <Sparkles className="size-3.5 text-brand-400" aria-hidden="true" />
               {COMPANY.tagline}
-              <span className="hidden text-slate-500 sm:inline">•</span>
+              <span className="hidden text-slate-400 sm:inline" aria-hidden="true">
+                •
+              </span>
               <span className="hidden text-slate-400 sm:inline">Erode, Tamil Nadu</span>
-            </motion.div>
+            </div>
 
-            <motion.h1
-              variants={fadeInUp}
+            {/* No entrance animation — this is the LCP element. */}
+            <h1
               id="hero-heading"
               className="text-4xl leading-[1.1] sm:text-5xl lg:text-6xl xl:text-[4.1rem]"
             >
               Securing the Future Through{' '}
               <span className="text-gradient-brand">Technology &amp; Innovation</span>
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              variants={fadeInUp}
-              className="min-h-[3.5rem] text-lg text-slate-300 sm:min-h-0 sm:text-xl"
+            <p
+              className="min-h-[3.5rem] animate-enter text-lg text-slate-300 sm:min-h-0 sm:text-xl"
+              style={{ animationDelay: '160ms' }}
             >
               <span className="text-slate-400">We specialise in </span>
               <TypedText
                 phrases={HERO_HIGHLIGHTS}
                 className="font-heading font-semibold text-brand-300"
               />
-            </motion.p>
+            </p>
 
-            <motion.p
-              variants={fadeInUp}
-              className="max-w-xl text-base leading-relaxed text-slate-400"
+            <p
+              className="max-w-xl animate-enter text-base leading-relaxed text-slate-400"
+              style={{ animationDelay: '240ms' }}
             >
               {COMPANY.name} builds and defends the systems businesses depend on — and trains the
               engineers who will run them. From custom software and cloud infrastructure to
               penetration testing, digital forensics and industry-ready internships.
-            </motion.p>
+            </p>
 
-            <motion.div variants={fadeInUp} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div
+              className="flex animate-enter flex-col gap-3 sm:flex-row sm:flex-wrap"
+              style={{ animationDelay: '320ms' }}
+            >
               <Button href="#services" size="lg">
                 Explore Services
                 <ArrowRight
@@ -89,49 +89,40 @@ export function Hero() {
                 <GraduationCap className="size-4" aria-hidden="true" />
                 Apply for Internship
               </Button>
-            </motion.div>
+            </div>
 
-            <motion.ul
-              variants={fadeInUp}
-              className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-400"
+            <ul
+              className="mt-2 flex animate-enter flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-400"
+              style={{ animationDelay: '400ms' }}
             >
-              {[
-                '500+ students trained',
-                '150+ projects delivered',
-                '100+ business clients',
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <ShieldCheck className="size-4 text-brand-400" aria-hidden="true" />
-                  {item}
-                </li>
-              ))}
-            </motion.ul>
-          </motion.div>
+              {['500+ students trained', '150+ projects delivered', '100+ business clients'].map(
+                (item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <ShieldCheck className="size-4 text-brand-400" aria-hidden="true" />
+                    {item}
+                  </li>
+                ),
+              )}
+            </ul>
+          </div>
 
           {/* Visual */}
-          <motion.div
-            variants={slideInRight}
-            initial="hidden"
-            animate="visible"
-            className="lg:col-span-5"
-          >
+          <div className="animate-enter-right lg:col-span-5" style={{ animationDelay: '200ms' }}>
             <HeroVisual />
-          </motion.div>
+          </div>
         </div>
       </Container>
 
       {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
+      <div
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-6 hidden justify-center lg:flex"
+        className="absolute inset-x-0 bottom-6 hidden animate-enter justify-center lg:flex"
+        style={{ animationDelay: '900ms' }}
       >
         <div className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-white/20 p-1.5">
           <span className="size-1.5 animate-float rounded-full bg-brand-400" />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

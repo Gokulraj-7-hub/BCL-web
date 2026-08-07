@@ -1,11 +1,8 @@
-'use client';
-
 import { Quote, Star } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { TESTIMONIALS } from '@/constants/testimonials';
-import { fadeInUp, viewportOnce } from '@/lib/motion';
+import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/utils/cn';
 import type { Testimonial } from '@/types';
 
@@ -86,11 +83,8 @@ function TestimonialCard({
 }) {
   return (
     <li aria-hidden={ariaHidden} className="w-[19rem] shrink-0 sm:w-[23rem]">
-      <motion.figure
-        variants={fadeInUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={viewportOnce}
+      <Reveal
+        as="figure"
         className="flex h-full flex-col rounded-2xl glass p-6 transition-colors duration-300 hover:border-brand-400/35"
       >
         <div className="flex items-start justify-between gap-3">
@@ -141,7 +135,7 @@ function TestimonialCard({
             </span>
           </span>
         </figcaption>
-      </motion.figure>
+      </Reveal>
     </li>
   );
 }

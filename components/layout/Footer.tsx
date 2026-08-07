@@ -1,7 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { Facebook, Github, Instagram, Linkedin, Mail, MapPin, Phone, Twitter, Youtube } from 'lucide-react';
+import {
+  Facebook,
+  Github,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
+  Youtube,
+} from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { Container } from '@/components/ui/Container';
 import { COMPANY, FULL_ADDRESS } from '@/constants/company';
@@ -120,7 +130,7 @@ export function Footer() {
         </div>
 
         {/* Legal bar */}
-        <div className="mt-8 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {COMPANY.name}. All rights reserved.
           </p>

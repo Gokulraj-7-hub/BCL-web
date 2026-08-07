@@ -1,17 +1,28 @@
 import dynamic from 'next/dynamic';
 import { Hero } from '@/sections/Hero';
-import { About } from '@/sections/About';
-import { WhyChooseUs } from '@/sections/WhyChooseUs';
-import { Stats } from '@/sections/Stats';
-import { Services } from '@/sections/Services';
 
 /**
- * Below-the-fold sections are code-split so the initial bundle only carries
- * what is needed to paint the hero and the first scroll. Each placeholder
- * reserves vertical space to prevent layout shift while the chunk loads.
+ * Only the hero is in the initial bundle. Every other section is code-split so
+ * Framer Motion, GSAP and the section markup are fetched as the visitor
+ * scrolls rather than blocking first paint.
+ *
+ * Each placeholder reserves vertical space to keep Cumulative Layout Shift at
+ * zero while a chunk loads.
  */
 const sectionFallback = <div className="min-h-[60vh]" aria-hidden="true" />;
 
+const About = dynamic(() => import('@/sections/About').then((m) => m.About), {
+  loading: () => sectionFallback,
+});
+const WhyChooseUs = dynamic(() => import('@/sections/WhyChooseUs').then((m) => m.WhyChooseUs), {
+  loading: () => sectionFallback,
+});
+const Stats = dynamic(() => import('@/sections/Stats').then((m) => m.Stats), {
+  loading: () => <div className="min-h-[20vh]" aria-hidden="true" />,
+});
+const Services = dynamic(() => import('@/sections/Services').then((m) => m.Services), {
+  loading: () => sectionFallback,
+});
 const Training = dynamic(() => import('@/sections/Training').then((m) => m.Training), {
   loading: () => sectionFallback,
 });
