@@ -10,10 +10,11 @@ development container.
 | Area                   | Method                                               | Result                              |
 | ---------------------- | ---------------------------------------------------- | ----------------------------------- |
 | Unit & component tests | Vitest + Testing Library                             | 50 passed / 50                      |
+| End-to-end tests       | Playwright, desktop + mobile projects                | 58 passed / 58                      |
 | Type safety            | `tsc --noEmit`, strict mode                          | 0 errors                            |
 | Linting                | ESLint 9 (`next/core-web-vitals`, `next/typescript`) | 0 errors, 0 warnings                |
 | Production build       | `next build`                                         | Succeeds, 9 routes generated        |
-| Accessibility          | Lighthouse + scripted axe-style checks               | **100**                             |
+| Accessibility          | Lighthouse + axe-core (WCAG 2.1 A/AA) in Playwright  | **100**, 0 axe violations           |
 | SEO                    | Lighthouse                                           | **100**                             |
 | Best practices         | Lighthouse                                           | **100**                             |
 | Performance            | Lighthouse (median of 3)                             | **86** — see `PERFORMANCE.md`       |
@@ -81,7 +82,71 @@ Covers the Zod schema shared by the contact form and the API route.
 
 ---
 
-## 3. Accessibility Testing
+## 3. End-to-End Test Suite
+
+Run with `npm run test:e2e`. Playwright drives a real **production build**
+(`next build && next start`) — not the dev server, whose overlays and
+unminified bundles would make the console-error and accessibility assertions
+unreliable.
+
+Two projects run every spec: **desktop** (1440 × 900 Chrome) and **mobile**
+(Pixel 7). 29 specs × 2 projects = **58 tests, all passing**.
+
+### `e2e/accessibility.spec.ts`
+
+- **Full axe-core scan** against `wcag2a`, `wcag2aa`, `wcag21a` and `wcag21aa`
+  after scrolling the whole page so every lazily-mounted section is present.
+  The third-party Google Maps iframe is excluded. **0 violations.**
+- Exactly one `<h1>`, no skipped heading levels.
+- Every image has `alt`; every button and link has an accessible name.
+- Skip link is the first tab stop, becomes visible on focus, and moves focus to
+  `#main-content`.
+- Lightbox satisfies the modal contract: `aria-modal`, descriptive label, focus
+  moves in on open, Escape closes.
+- Accordion exposes `aria-expanded` and wires `aria-controls` to a panel
+  labelled by its trigger.
+- Under `prefers-reduced-motion: reduce` the particle canvas is not rendered
+  and content is still visible.
+
+### `e2e/seo.spec.ts`
+
+- Title, meta description and canonical URL present.
+- Open Graph and Twitter tags present, with a **PNG** image (SVG previews do
+  not render on Facebook, LinkedIn or WhatsApp).
+- All six Schema.org graphs emitted and parseable, with the expected `@type`s.
+- `robots.txt` references the sitemap and disallows `/api/`.
+- `sitemap.xml` and `manifest.webmanifest` served; manifest icons are all PNG.
+- Every branded asset (OG image, three icons, favicon) returns 200 with the
+  right content type.
+- 404 returns HTTP 404 and every `robots` directive on it says `noindex`.
+- No broken in-page anchors.
+- Security headers present, and `X-Powered-By` absent.
+
+### `e2e/site.spec.ts`
+
+- All 13 sections render.
+- No horizontal overflow (asserted per project, so both mobile and desktop).
+- No console or page errors during a full-page scroll.
+- Gallery category filters narrow the grid; lightbox opens and closes.
+- FAQ accordion expands and collapses.
+- Contact form: empty submit blocked with errors and no network call; valid
+  submit shows success; a 502 surfaces the error message.
+- Contact API: rejects `GET` with 405, **validates server-side when the form is
+  bypassed entirely** (422), and silently discards honeypot submissions with a
+  generic 200.
+
+### A defect this suite caught
+
+The 404 page was emitting two `robots` meta tags. Next.js adds its own
+`noindex` for the not-found boundary, and the root layout's `index, follow` is
+inherited on top of it. Removing the page's explicit override — which looked
+redundant — left the two tags _contradicting each other_. The override is
+required, and there is now a test asserting every directive on that page says
+`noindex`.
+
+---
+
+## 4. Accessibility Testing
 
 Lighthouse accessibility: **100**. Verified additionally with a scripted
 Chromium pass. Details in `ACCESSIBILITY.md`.
@@ -119,7 +184,7 @@ Verified working:
 
 ---
 
-## 4. Responsive Testing
+## 5. Responsive Testing
 
 Measured `document.scrollWidth` against `clientWidth` after a full-page scroll:
 
@@ -135,7 +200,7 @@ gallery grid and lightbox, FAQ, contact form and map.
 
 ---
 
-## 5. Cross-Browser Testing
+## 6. Cross-Browser Testing
 
 **Automated in this environment:** Chromium 3 breakpoints, plus a
 reduced-motion context. Zero console errors, zero page errors, zero failed
@@ -150,7 +215,7 @@ degradation), but this should be confirmed on real Safari before launch.
 
 ---
 
-## 6. Manual QA Checklist
+## 7. Manual QA Checklist
 
 | Check                                                      | Result       |
 | ---------------------------------------------------------- | ------------ |
@@ -172,7 +237,7 @@ degradation), but this should be confirmed on real Safari before launch.
 
 ---
 
-## 7. Broken Link Testing
+## 8. Broken Link Testing
 
 Every in-page `href="#..."` was resolved against the DOM: **0 broken anchors**.
 
@@ -182,7 +247,7 @@ conventional format. They are **not verified accounts** — replace them in
 
 ---
 
-## 8. Known Gaps
+## 9. Known Gaps
 
 1. **Cross-browser testing on Safari, Firefox and Edge has not been performed.**
    Only Chromium was available in this environment.
@@ -190,8 +255,9 @@ conventional format. They are **not verified accounts** — replace them in
    that requires real SMTP credentials. The route's validation, rate limiting,
    error handling and the not-configured path are covered by tests; the
    Nodemailer send itself is not.
-3. **No end-to-end test suite.** Interactive flows were verified by a scripted
-   Chromium pass rather than committed Playwright specs. Adding
-   `@playwright/test` would make that repeatable in CI.
+3. **The E2E suite runs Chromium only.** Playwright is configured with desktop
+   and mobile projects, but only Chromium is installed in this environment.
+   Adding `firefox` and `webkit` projects is a config change once those
+   browsers are available.
 4. **Content is placeholder in two places** — testimonials and gallery images.
    See the pre-launch checklist in `README.md`.

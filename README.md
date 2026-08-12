@@ -60,8 +60,8 @@ Development Process, Testimonials, Gallery with lightbox, FAQ, Contact.
 - Security headers including a strict Content Security Policy, HSTS, and clickjacking protection
 - Contact API with shared Zod validation, input sanitisation, honeypot spam trap, rate limiting
   and body-size limits
-- 50 automated tests covering validation, rate limiting, utilities, the accordion and the contact
-  form
+- 50 unit and component tests, plus 58 Playwright end-to-end tests (desktop and mobile) that
+  include a full axe-core WCAG 2.1 A/AA scan
 
 ---
 
@@ -139,7 +139,8 @@ becomes a build error rather than a leak.
 ├── scripts/                    # Placeholder asset generation
 ├── sections/                   # One file per page section
 ├── styles/globals.css          # Tailwind theme tokens, keyframes, component utilities
-├── tests/                      # Vitest suite
+├── e2e/                        # Playwright end-to-end suite
+├── tests/                      # Vitest unit and component suite
 ├── types/                      # Shared TypeScript types
 └── public/                     # Logo, icons, OG image, gallery images
 ```
@@ -148,21 +149,23 @@ becomes a build error rather than a leak.
 
 ## Available Scripts
 
-| Command                  | Description                                               |
-| ------------------------ | --------------------------------------------------------- |
-| `npm run dev`            | Start the development server                              |
-| `npm run build`          | Create a production build                                 |
-| `npm start`              | Serve the production build                                |
-| `npm run lint`           | Run ESLint                                                |
-| `npm run lint:fix`       | Run ESLint with autofix                                   |
-| `npm run typecheck`      | Type-check without emitting                               |
-| `npm run format`         | Format all files with Prettier                            |
-| `npm run format:check`   | Verify formatting                                         |
-| `npm test`               | Run the test suite once                                   |
-| `npm run test:watch`     | Run tests in watch mode                                   |
-| `npm run test:coverage`  | Run tests with a coverage report                          |
-| `npm run assets:raster`  | Regenerate PNG icons and the OG image from the brand SVGs |
-| `npm run assets:gallery` | Regenerate the gallery placeholder images                 |
+| Command                  | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `npm run dev`            | Start the development server                                   |
+| `npm run build`          | Create a production build                                      |
+| `npm start`              | Serve the production build                                     |
+| `npm run lint`           | Run ESLint                                                     |
+| `npm run lint:fix`       | Run ESLint with autofix                                        |
+| `npm run typecheck`      | Type-check without emitting                                    |
+| `npm run format`         | Format all files with Prettier                                 |
+| `npm run format:check`   | Verify formatting                                              |
+| `npm test`               | Run the test suite once                                        |
+| `npm run test:watch`     | Run tests in watch mode                                        |
+| `npm run test:coverage`  | Run tests with a coverage report                               |
+| `npm run test:e2e`       | Run the Playwright end-to-end suite against a production build |
+| `npm run test:e2e:ui`    | Run the end-to-end suite in Playwright's UI mode               |
+| `npm run assets:raster`  | Regenerate PNG icons and the OG image from the brand SVGs      |
+| `npm run assets:gallery` | Regenerate the gallery placeholder images                      |
 
 ---
 

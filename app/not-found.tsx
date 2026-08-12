@@ -4,6 +4,14 @@ import { Container } from '@/components/ui/Container';
 import { Logo } from '@/components/ui/Logo';
 import { GridBackdrop } from '@/components/background/GridBackdrop';
 
+/**
+ * The `robots` override is required, not redundant.
+ *
+ * Next.js emits its own `<meta name="robots" content="noindex">` for the
+ * not-found boundary, but the root layout's `index, follow` is still inherited
+ * here — without this override the 404 ships two *conflicting* directives.
+ * With it, both tags agree on `noindex`.
+ */
 export const metadata: Metadata = {
   title: 'Page Not Found',
   robots: { index: false, follow: true },
