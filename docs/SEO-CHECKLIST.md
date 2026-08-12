@@ -28,24 +28,25 @@ Title: `BugCap Labs Pvt. Ltd. | Cyber Security, Software Development & IT Traini
 | Item                                                        | Status                 |
 | ----------------------------------------------------------- | ---------------------- |
 | Open Graph type, locale, URL, site name, title, description | Done                   |
-| OG image (1200 × 630, branded)                              | Done — `/og-image.svg` |
+| OG image (1200 × 630, branded PNG)                          | Done — `/og-image.png` |
 | Twitter card (`summary_large_image`)                        | Done                   |
 | Twitter title, description, image, creator                  | Done                   |
 
-> **Note:** the OG image is an SVG. Facebook, LinkedIn and WhatsApp do not
-> render SVG previews reliably. Export `public/og-image.svg` to a 1200 × 630
-> PNG and point `lib/seo.ts` at it before launch — this is the one SEO item
-> that will visibly misbehave in production if skipped.
+The OG image is a **1200 × 630 PNG** (`/og-image.png`). SVG previews are not
+rendered reliably by Facebook, LinkedIn or WhatsApp, so the SVG is kept only as
+the editable source — regenerate the PNG with `npm run assets:raster` after
+changing it.
 
 ### Crawling and indexing
 
-| Item                      | Status | Where                                           |
-| ------------------------- | ------ | ----------------------------------------------- |
-| `robots.txt`              | Done   | `app/robots.ts` — allows all, disallows `/api/` |
-| `sitemap.xml`             | Done   | `app/sitemap.ts` — 12 entries with priorities   |
-| Robots meta directives    | Done   | `index, follow`, `max-image-preview: large`     |
-| 404 page marked `noindex` | Done   | `app/not-found.tsx`                             |
-| PWA manifest              | Done   | `app/manifest.ts`                               |
+| Item                        | Status | Where                                           |
+| --------------------------- | ------ | ----------------------------------------------- |
+| `robots.txt`                | Done   | `app/robots.ts` — allows all, disallows `/api/` |
+| `sitemap.xml`               | Done   | `app/sitemap.ts` — 12 entries with priorities   |
+| Robots meta directives      | Done   | `index, follow`, `max-image-preview: large`     |
+| 404 page marked `noindex`   | Done   | `app/not-found.tsx`                             |
+| PWA manifest                | Done   | `app/manifest.ts` — PNG icons, incl. maskable   |
+| Favicons + Apple touch icon | Done   | SVG plus 32/192/512 PNG fallbacks               |
 
 ### Structured data (Schema.org, JSON-LD)
 
@@ -107,7 +108,6 @@ Still to do (off-site, cannot be done in code):
 
 - [ ] Set `NEXT_PUBLIC_SITE_URL` to the production domain (canonical URLs, the
       sitemap and OG tags all derive from it)
-- [ ] **Convert the OG image to PNG** and update `lib/seo.ts`
 - [ ] Replace the placeholder social URLs in `constants/company.ts` with real,
       verified profiles — they feed the `sameAs` array, and wrong values weaken
       entity matching

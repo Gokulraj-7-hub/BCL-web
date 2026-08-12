@@ -47,11 +47,15 @@ export const baseMetadata: Metadata = {
     siteName: COMPANY.name,
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
+    // PNG, not SVG: Facebook, LinkedIn and WhatsApp do not render SVG
+    // previews. Regenerate from `public/og-image.svg` with
+    // `npm run assets:raster` after editing the source.
     images: [
       {
-        url: '/og-image.svg',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
+        type: 'image/png',
         alt: `${COMPANY.name} — ${COMPANY.tagline}`,
       },
     ],
@@ -60,7 +64,7 @@ export const baseMetadata: Metadata = {
     card: 'summary_large_image',
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    images: ['/og-image.svg'],
+    images: ['/og-image.png'],
     creator: '@bugcaplabs',
   },
   robots: {
@@ -75,11 +79,14 @@ export const baseMetadata: Metadata = {
     },
   },
   icons: {
+    // SVG first for crisp rendering, with PNG fallbacks for browsers and
+    // platforms that ignore SVG favicons.
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/icon-192.svg', sizes: '192x192', type: 'image/svg+xml' },
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
-    apple: [{ url: '/icon-192.svg', sizes: '180x180' }],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
   },
   manifest: '/manifest.webmanifest',
   ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION

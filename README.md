@@ -148,19 +148,21 @@ becomes a build error rather than a leak.
 
 ## Available Scripts
 
-| Command                 | Description                      |
-| ----------------------- | -------------------------------- |
-| `npm run dev`           | Start the development server     |
-| `npm run build`         | Create a production build        |
-| `npm start`             | Serve the production build       |
-| `npm run lint`          | Run ESLint                       |
-| `npm run lint:fix`      | Run ESLint with autofix          |
-| `npm run typecheck`     | Type-check without emitting      |
-| `npm run format`        | Format all files with Prettier   |
-| `npm run format:check`  | Verify formatting                |
-| `npm test`              | Run the test suite once          |
-| `npm run test:watch`    | Run tests in watch mode          |
-| `npm run test:coverage` | Run tests with a coverage report |
+| Command                  | Description                                               |
+| ------------------------ | --------------------------------------------------------- |
+| `npm run dev`            | Start the development server                              |
+| `npm run build`          | Create a production build                                 |
+| `npm start`              | Serve the production build                                |
+| `npm run lint`           | Run ESLint                                                |
+| `npm run lint:fix`       | Run ESLint with autofix                                   |
+| `npm run typecheck`      | Type-check without emitting                               |
+| `npm run format`         | Format all files with Prettier                            |
+| `npm run format:check`   | Verify formatting                                         |
+| `npm test`               | Run the test suite once                                   |
+| `npm run test:watch`     | Run tests in watch mode                                   |
+| `npm run test:coverage`  | Run tests with a coverage report                          |
+| `npm run assets:raster`  | Regenerate PNG icons and the OG image from the brand SVGs |
+| `npm run assets:gallery` | Regenerate the gallery placeholder images                 |
 
 ---
 
