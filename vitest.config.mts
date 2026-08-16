@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 export default defineConfig({
   plugins: [react()],
@@ -19,7 +19,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './'),
+      // `import.meta.dirname` rather than `__dirname`: this config is ESM,
+      // and Vite's native config loader does not provide the CJS globals.
+      '@': resolve(import.meta.dirname, './'),
     },
   },
 });

@@ -36,7 +36,7 @@ Tamil Nadu.
 | Forms     | React Hook Form 7 + Zod 3 (shared client/server schema) |
 | Email     | Nodemailer 9 (SMTP, server-side only)                   |
 | Icons     | Lucide React                                            |
-| Testing   | Vitest 2, Testing Library, jsdom                        |
+| Testing   | Vitest 4 + Playwright, Testing Library, jsdom           |
 | Tooling   | ESLint 9 (flat config), Prettier 3                      |
 | Hosting   | Vercel (zero-config)                                    |
 

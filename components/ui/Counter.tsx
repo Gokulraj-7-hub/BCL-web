@@ -1,8 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
-import { useInView } from 'framer-motion';
 import { useCountUp } from '@/hooks/useCountUp';
+import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { formatCount } from '@/utils/dom';
 import { cn } from '@/utils/cn';
 
@@ -17,13 +16,12 @@ interface CounterProps {
 /**
  * Number that counts up when it scrolls into view.
  *
- * The final value is exposed to assistive technology via `aria-label` so
- * screen readers announce the result rather than a stream of intermediate
+ * The final value is exposed to assistive technology as visually hidden text
+ * so screen readers announce the result rather than a stream of intermediate
  * numbers.
  */
 export function Counter({ value, suffix = '', prefix = '', duration, className }: CounterProps) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  const [ref, isInView] = useInViewOnce<HTMLSpanElement>({ amount: 0.5 });
   const current = useCountUp({ end: value, duration, start: isInView });
 
   return (

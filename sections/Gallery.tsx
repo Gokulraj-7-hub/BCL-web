@@ -32,6 +32,17 @@ const FILTERS: readonly Filter[] = ['All', ...GALLERY_CATEGORIES];
 export function Gallery() {
   const [activeFilter, setActiveFilter] = useState<Filter>('All');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  // Latches on the first open. Rendering <Lightbox> unconditionally — even
+  // with index={null} — resolves its dynamic import as soon as this section
+  // mounts, which measured at 69 kB of JavaScript fetched on scroll for
+  // visitors who never open an image. Gating on this defers it to the click,
+  // and keeping it mounted afterwards preserves the modal's exit animation.
+  const [hasOpenedLightbox, setHasOpenedLightbox] = useState(false);
+
+  const openLightbox = (index: number) => {
+    setHasOpenedLightbox(true);
+    setLightboxIndex(index);
+  };
 
   const visibleItems = useMemo(
     () =>
@@ -93,7 +104,7 @@ export function Gallery() {
             <Reveal as="li" key={item.id} delay={Math.min(index, 5) * 60}>
               <button
                 type="button"
-                onClick={() => setLightboxIndex(index)}
+                onClick={() => openLightbox(index)}
                 className="group relative block w-full overflow-hidden rounded-2xl border border-white/8 bg-navy-900"
               >
                 <span className="relative block aspect-4/3 w-full">
@@ -134,12 +145,14 @@ export function Gallery() {
         )}
       </Container>
 
-      <Lightbox
-        items={visibleItems}
-        index={lightboxIndex}
-        onClose={() => setLightboxIndex(null)}
-        onNavigate={setLightboxIndex}
-      />
+      {hasOpenedLightbox && (
+        <Lightbox
+          items={visibleItems}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onNavigate={setLightboxIndex}
+        />
+      )}
     </section>
   );
 }

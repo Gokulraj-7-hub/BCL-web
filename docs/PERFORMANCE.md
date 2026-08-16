@@ -40,14 +40,15 @@ and use that figure rather than this one.
 
 ### Initial page weight (measured, compressed)
 
-| Resource   | Transfer size               |
-| ---------- | --------------------------- |
-| JavaScript | 253 kB                      |
-| Fonts      | 75 kB                       |
-| Document   | 70 kB                       |
-| CSS        | 15 kB                       |
-| Other      | 41 kB                       |
-| **Total**  | **454 kB** over 24 requests |
+| Resource   | Transfer size                                       |
+| ---------- | --------------------------------------------------- |
+| JavaScript | 663 kB uncompressed across 10 files on initial load |
+| Fonts      | 75 kB                                               |
+| Document   | 70 kB                                               |
+| CSS        | 15 kB                                               |
+
+A further 111 kB is fetched while scrolling (GSAP and the client sections), and
+112 kB only when the gallery lightbox is first opened.
 
 ---
 
@@ -64,6 +65,7 @@ The first production build measured **57**. What moved it:
 | Poppins trimmed to 3 weights; GSAP gated behind viewport proximity | 82          |
 | ~90 client components collapsed into 2 delegated listeners         | 87          |
 | Inter no longer preloaded (it competed with the LCP font)          | 87          |
+| Lightbox gated behind a click, moving 112 kB off the initial load  | 87          |
 
 ### The three changes that mattered most
 
@@ -104,15 +106,32 @@ to 161 kB** across this work, against a 103 kB shared React/Next runtime
 baseline. The compressed transfer figures in section 1 are the current
 end-to-end numbers.
 
-Deferred, not in the initial load:
+Deferred, measured by recording every script the browser fetches per phase
+(`initial load` / `scroll the whole page` / `click a gallery image`):
 
-| Library              | Size    | Loads when                                    |
-| -------------------- | ------- | --------------------------------------------- |
-| Framer Motion        | ~227 kB | A gallery image is opened (lightbox only)     |
-| GSAP + ScrollTrigger | ~93 kB  | The process section comes within one viewport |
+| Phase                      | JavaScript fetched (uncompressed)             |
+| -------------------------- | --------------------------------------------- |
+| Initial load               | 663 kB across 10 files                        |
+| Scrolling to every section | 111 kB across 2 files (GSAP + section chunks) |
+| Opening the lightbox       | 112 kB across 1 file (Framer Motion)          |
 
-Verified directly: no script referenced by the initial HTML contains Framer
-Motion.
+### A correction worth recording
+
+An earlier revision of this document claimed Framer Motion was already absent
+from the initial load, "verified" by grepping the built chunks. **That
+verification was invalid** — the build is minified, so export names like
+`AnimatePresence` and `useInView` no longer appear as literal strings and the
+grep matched nothing whether the library was present or not.
+
+Measuring actual network traffic showed the opposite: the 112 kB Framer Motion
+chunk was being fetched on initial load. `<Lightbox>` was rendered
+unconditionally with `index={null}`, so its dynamic import resolved as soon as
+the gallery mounted rather than when a visitor opened an image. Gating the
+component behind a `hasOpenedLightbox` latch moved those 112 kB off the
+critical path and onto the click, where the original design intended them.
+
+The lesson generalises: verify bundle composition by measuring what the browser
+downloads, not by searching minified output.
 
 ---
 

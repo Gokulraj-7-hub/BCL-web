@@ -140,7 +140,8 @@ npm audit
 npm outdated
 ```
 
-**Current status: `npm audit --omit=dev` reports 0 vulnerabilities.**
+**Current status: `npm audit` reports 0 vulnerabilities — across the whole
+tree, not just production dependencies.**
 
 Getting there required two upgrades during the security review, both of which
 are worth recording:
@@ -151,6 +152,13 @@ are worth recording:
   This site sends mail through Nodemailer from a public form, so these were
   directly reachable. The upgrade is a semver major but needed no code change —
   `createTransport` and `sendMail` are unchanged for this usage.
+- **Vitest 2 → 4.** The `vitest → vite → esbuild` chain carried five
+  advisories, one critical (arbitrary file read and execution when the Vitest
+  UI server is listening) and one high (path traversal in Vite's optimized-deps
+  `.map` handling). These are development-only and never reach the deployed
+  site, but they are the kind of finding a security company should not be
+  carrying in its own repository. The upgrade needed only a config rename to
+  `.mts` and `import.meta.dirname` in place of `__dirname`.
 - **Next.js 15 → 16.** Next 15 pins vulnerable `postcss` (XSS via unescaped
   `</style>`, path traversal in source-map auto-loading) and `sharp`
   (inherited libvips CVEs). Both are transitive, and Next 16 is the only

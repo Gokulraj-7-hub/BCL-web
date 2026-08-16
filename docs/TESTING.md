@@ -21,7 +21,7 @@ development container.
 | Responsive             | Chromium at 390 / 820 / 1440 px                      | No horizontal overflow at any width |
 | Broken links           | Scripted check of all in-page anchors                | 0 broken                            |
 | Console errors         | Chromium, full-page scroll at 3 breakpoints          | 0 errors                            |
-| Dependency audit       | `npm audit --omit=dev`                               | 0 vulnerabilities                   |
+| Dependency audit       | `npm audit` (whole tree)                             | 0 vulnerabilities                   |
 
 ---
 
